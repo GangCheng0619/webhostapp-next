@@ -4,7 +4,7 @@ export const LoginPage = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: calc(100vh - 130px);
   background: linear-gradient(#e66465, #9198e5);
 `;
 
