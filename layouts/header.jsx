@@ -21,9 +21,13 @@ const Header = () => {
     router.push("/auth/register");
   };
 
+  const toLanding = () => {
+    router.push("/");
+  };
+
   return (
     <HeaderPart>
-      <HeaderLogoPart>
+      <HeaderLogoPart onClick={toLanding}>
         <Image src={logo} alt="logo" />
       </HeaderLogoPart>
       <HeaderLinkpart>

@@ -20,6 +20,7 @@ export const HeaderLogoPart = styled.div`
   justify-content: center;
   align-items: center;
   padding: 20px;
+  cursor: pointer;
 `;
 
 export const HeaderLinkpart = styled.div`
