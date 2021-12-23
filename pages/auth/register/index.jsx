@@ -1,4 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useRef } from "react";
+import { useRouter } from "next/router";
+import { ToastContainer, toast } from "react-toastify";
 import {
   FieldLineDiv,
   RegisterBody,
@@ -8,14 +10,58 @@ import {
   RegisterPage,
 } from "./styles";
 import Text from "../../../components/customs/Text";
-import Input from "../../../components/customs/Input/Input";
+
+import userService from "../../../services/auth.service";
 
 const Register = () => {
+  const router = useRouter();
+
   const username = useRef();
   const email = useRef();
   const password = useRef();
   const passwordconfirm = useRef();
-  // const [password, setPassword] = useState("");
+
+  const handleRegister = () => {
+    if (
+      username.current.value === "" ||
+      email.current.value === "" ||
+      password.current.value === "" ||
+      passwordconfirm.current.value === ""
+    ) {
+      toast.warning("Please fill out all the gaps!");
+      return;
+    } else {
+      if (password.current.value !== passwordconfirm.current.value) {
+        toast.error("Please match the password!");
+        return;
+      } else {
+        if (password.current.value.length < 6) {
+          toast.warning("Must be 6 letters at least!");
+          return;
+        }
+        const senddata = {
+          username: username.current.value,
+          email: email.current.value,
+          password: password.current.value,
+          authflag: "signup",
+        };
+
+        userService
+          .register(senddata)
+          .then((res) => {
+            if (!res.error) {
+              router.push({
+                pathname: "/auth/login",
+                query: { flag: "registered" },
+              });
+            } else {
+              toast.error(res.data);
+            }
+          })
+          .catch((err) => console.log(err));
+      }
+    }
+  };
 
   return (
     <RegisterPage>
@@ -36,7 +82,7 @@ const Register = () => {
             <Text fSize={20} fWeight={400} tSpacing={0} fColor="white">
               Username:
             </Text>
-            <Input
+            <input
               type="text"
               ref={username}
               name="username"
@@ -48,7 +94,7 @@ const Register = () => {
             <Text fSize={20} fWeight={400} tSpacing={0} fColor="white">
               Email:
             </Text>
-            <Input
+            <input
               type="text"
               ref={email}
               name="email"
@@ -59,7 +105,7 @@ const Register = () => {
             <Text fSize={20} fWeight={400} tSpacing={0} fColor="white">
               Password:
             </Text>
-            <Input
+            <input
               type="password"
               name="password"
               ref={password}
@@ -68,9 +114,9 @@ const Register = () => {
           </FieldLineDiv>
           <FieldLineDiv>
             <Text fSize={20} fWeight={400} tSpacing={0} fColor="white">
-              Email:
+              Confirm:
             </Text>
-            <Input
+            <input
               type="password"
               ref={passwordconfirm}
               name="passwordconfirm"
@@ -78,13 +124,14 @@ const Register = () => {
             />
           </FieldLineDiv>
           <FieldLineDiv>
-            <RegisterBtn>
+            <RegisterBtn onClick={handleRegister}>
               <Text mode="span" fSize={20} fWeight={400} tSpacing={0}>
                 Register
               </Text>
             </RegisterBtn>
           </FieldLineDiv>
         </RegisterBody>
+        <ToastContainer />
       </RegisterContainer>
     </RegisterPage>
   );
